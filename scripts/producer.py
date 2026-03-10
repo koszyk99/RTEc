@@ -50,5 +50,5 @@ try:
 
         time.sleep(1) # We wait 1 second before the next order
 
-except KeyboardInterrput:
+except KeyboardInterrupt:
     print("\nClosing the generator...")
