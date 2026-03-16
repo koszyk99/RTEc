@@ -3,9 +3,9 @@ from pyspark.sql.functions import from_json, col
 from pyspark.sql.types import StructType, StructField, StringType, DoubleType, IntegerType
 
 # Schema definition (must be identical to what is sent Producer)
-schema = StructTYpe([
+schema = StructType([
     StructField("order_id", IntegerType(), True),
-    StructField("user_id", IntegerTYpe(), True),
+    StructField("user_id", IntegerType(), True),
     StructField("product", StringType(), True),
     StructField("category", StringType(), True),
     StructField("price", DoubleType(), True),
@@ -17,11 +17,13 @@ schema = StructTYpe([
 spark = SparkSession.builder \
     .appName("EcommerceStreamProcessor") \
     .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0,org.postgresql:postgresql:42.6.0") \
-    .get_session()
+    .getOrCreate()
+
+spark.sparkContext.setLogLevel("INFO")
 
 # Read stream from Kafka
 # 'startingOffests': 'earliest' means, that we will read everything from the beginning of the topic
-df = spark.readSpark \
+df = spark.readStream \
     .format("kafka") \
     .option("kafka.bootstrap.servers", "localhost:9092") \
     .option("subscribe", "orders") \
@@ -31,7 +33,8 @@ df = spark.readSpark \
 # Processing: Casting Bytes to String -> Parsing JSON to Columns
 processed_df = df.selectExpr("Cast(value AS STRING)") \
     .select(from_json(col("value"), schema).alias("data")) \
-    .select("data.*")
+    .select("data.*") \
+    .withColumn("timestamp", col("timestamp").cast("timestamp"))
 
 # Function to save each micro-batch to Postgres
 def write_to_postgres(batch_df, batch_id):
