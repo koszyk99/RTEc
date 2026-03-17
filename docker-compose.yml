@@ -31,5 +31,29 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  airflow-db:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    ports:
+      - "5435:5435"
+
+  airflow:
+    image: apache/airflow:2.7.1
+    depends_on:
+      - airflow-db
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-db/airflow
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./dbt_ecommerce:/opt/airflow/dbt_ecommerce
+      - ./venv:/opt/airflow/venv
+    ports:
+      - "8080:8080"
+    command: standalone
+
 volumes:
   postgres_data:
