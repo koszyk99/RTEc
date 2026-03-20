@@ -38,11 +38,15 @@ docker-compose up -d
 ```
 
 ### 3. Run Real-Time Components
-### Open two separate terminals and run:
-### Producer: python3 scripts/producer.py
-### Spark Processor: spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0,org.postgresql:postgresql:42.7.2 scripts/spark_processor.py
+Open two separate terminals and run:
+
+Producer: python3 scripts/producer.py
+
+Spark Processor: spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0,org.postgresql:postgresql:42.7.2 scripts/spark_processor.py
 
 ### 4. Access Airflow UI
-### URL: http://localhost:8080
-### Credentials: admin / admin
-### Action: Unpause the ecommerce_dbt_flow DAG to start the automated transformation cycle.
+URL: http://localhost:8080
+
+Credentials: admin / admin
+
+Action: Unpause the ecommerce_dbt_flow DAG to start the automated transformation cycle.
