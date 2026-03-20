@@ -17,11 +17,15 @@ The project follows a **Medallion Architecture** (Bronze -> Silver -> Gold) and 
 * **Orchestration:** Apache Airflow (workflow automation).
 * **Infrastructure:** Docker & Docker Compose.
 
+---
+
 ## 📊 Data Flow Logic
 
 1.  **Bronze (Ingestion):** Raw orders are pushed to Kafka and consumed by Spark, which writes them to the `public.raw_orders` table.
 2.  **Silver (Staging):** dbt cleanses the data, handles timestamp parsing, and creates the `stg_orders` model.
 3.  **Gold (Analytics):** Automated dbt models aggregate the data into `sales_by_category` to provide real-time business insights.
+
+---
 
 ## 🚀 Getting Started
 
